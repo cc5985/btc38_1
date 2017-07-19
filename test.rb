@@ -10,7 +10,7 @@
 #
 #
 
-require 'btc38'
+require_relative 'btc381'
 
 Btc38.setup do |config|
   config.key="3b6f724d97da434fba4344c8bf6c2d80"
@@ -18,11 +18,8 @@ Btc38.setup do |config|
   config.uid = '94238'
 end
 
+p 'test ticker--------------------------------------------'
 r=Btc38.ticker
+p r
 p r.body
-
-r=Btc38.balances
-p r.body
-
-
-
+p '-------------------------------------------------------'
