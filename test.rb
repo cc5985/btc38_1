@@ -9,7 +9,7 @@
 #
 #
 #
-
+require_relative 'helper'
 require_relative 'btc381'
 
 Btc38.setup do |config|
@@ -18,8 +18,41 @@ Btc38.setup do |config|
   config.uid = '94238'
 end
 
-p 'test ticker--------------------------------------------'
-r=Btc38.ticker
-p r
-p r.body
-p '-------------------------------------------------------'
+test 'ticker' do |r|
+  r=Btc38.ticker
+  p r
+  p r.body
+end
+
+
+test 'depth' do |r|
+  r=Btc38.depth
+  p r
+  p r.body
+end
+
+test 'trades' do |r|
+  r=Btc38.trades
+  p r
+  p r.body
+end
+
+test 'make an order' do |r|
+  begin
+    r=Btc38.submit_order(1,'cny',1000,1,'btc' )
+    p r
+    p r.body
+  rescue Exception=>e
+    p e.message
+  end
+end
+#
+# test 'cancel an order' do |r|
+#   begin
+#     r=Btc38.submit_order(1,'cny',1000,1,'btc' )
+#     p r
+#     p r.body
+#   rescue Exception=>e
+#     p e.message
+#   end
+# end
