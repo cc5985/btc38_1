@@ -47,12 +47,12 @@ module Btc38
     post 'cancelOrder', mk_type: mk_type, order_id: order_id, coinname:coinname
   end
 
-  def self.order_list(mk_type='cny', coinname)
+  def self.order_list(mk_type='cny', coinname='btc')
     post 'getOrderList', mk_type: mk_type, coinname: coinname
   end
 
-  def self.trade_list(mk_type='cny', coinname)
-    post 'getMyTradeList', mk_type: mk_type, coinname: coinname
+  def self.trade_list(mk_type='cny', coinname='btc',page=1)
+    post 'getMyTradeList', mk_type: mk_type, coinname: coinname,page:page
   end
 
   protected

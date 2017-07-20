@@ -55,10 +55,30 @@ end
 
 # return value includes:
 # "no_record"
-#
+# "succ"
 test 'cancel an order' do |r|
   begin
     r=Btc38.cancel_order('cny','btc','368205786')
+    p r
+    p r.body
+  rescue Exception=>e
+    p e.message
+  end
+end
+
+test "my orders" do |r|
+  begin
+    r=Btc38.order_list('cny','btc')
+    p r
+    p r.body
+  rescue Exception=>e
+    p e.message
+  end
+end
+
+test "my trades" do |r|
+  begin
+    r=Btc38.trade_list('cny','btc',1)
     p r
     p r.body
   rescue Exception=>e
