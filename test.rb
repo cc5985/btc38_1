@@ -53,9 +53,12 @@ test 'make an order' do |r|
 end
 
 
+# return value includes:
+# "no_record"
+#
 test 'cancel an order' do |r|
   begin
-    r=Btc38.cancel_order('cny','btc','268204939')
+    r=Btc38.cancel_order('cny','btc','368205786')
     p r
     p r.body
   rescue Exception=>e
