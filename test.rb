@@ -78,7 +78,7 @@ end
 
 test "my trades" do |r|
   begin
-    r=Btc38.trade_list('cny','btc',1)
+    r=Btc38.trade_list('cny','xlm',1)
     p r
     p r.body
   rescue Exception=>e
