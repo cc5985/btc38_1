@@ -37,6 +37,11 @@ test 'trades' do |r|
   p r.body
 end
 
+
+# return value is like 'succ|123'
+# or succ
+# or overBalance
+# or else
 test 'make an order' do |r|
   begin
     r=Btc38.submit_order(1,'cny',1000,1,'btc' )
@@ -46,13 +51,14 @@ test 'make an order' do |r|
     p e.message
   end
 end
-#
-# test 'cancel an order' do |r|
-#   begin
-#     r=Btc38.submit_order(1,'cny',1000,1,'btc' )
-#     p r
-#     p r.body
-#   rescue Exception=>e
-#     p e.message
-#   end
-# end
+
+
+test 'cancel an order' do |r|
+  begin
+    r=Btc38.cancel_order('cny',368204 )
+    p r
+    p r.body
+  rescue Exception=>e
+    p e.message
+  end
+end
