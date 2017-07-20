@@ -43,8 +43,8 @@ module Btc38
     post 'submitOrder', type: type, mk_type: mk_type, price: price, amount: amount, coinname: coinname
   end
 
-  def self.cancel_order(mk_type='cny', order_id)
-    post 'cancelOrder', mk_type: mk_type, order_id: order_id
+  def self.cancel_order(mk_type='cny', order_id,coinname="btc")
+    post 'cancelOrder', mk_type: mk_type, order_id: order_id, coinname:coinname
   end
 
   def self.order_list(mk_type='cny', coinname)
