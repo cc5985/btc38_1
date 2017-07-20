@@ -55,7 +55,7 @@ end
 
 test 'cancel an order' do |r|
   begin
-    r=Btc38.cancel_order('cny',368204,'btc')
+    r=Btc38.cancel_order('cny','btc',368204)
     p r
     p r.body
   rescue Exception=>e
