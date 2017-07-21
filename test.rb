@@ -18,70 +18,80 @@ Btc38.setup do |config|
   config.uid = '94238'
 end
 
-test 'ticker' do |r|
-  r=Btc38.ticker
-  p r
-  p r.body
-end
+if ARGV[0].nil?
+  test 'ticker' do |r|
+    r=Btc38.ticker
+    p r
+    p r.body
+  end
 
+  test 'depth' do |r|
+    r=Btc38.depth
+    p r
+    p r.body
+  end
 
-test 'depth' do |r|
-  r=Btc38.depth
-  p r
-  p r.body
-end
-
-test 'trades' do |r|
-  r=Btc38.trades
-  p r
-  p r.body
-end
-
+  test 'trades' do |r|
+    r=Btc38.trades
+    p r
+    p r.body
+  end
 
 # return value is like 'succ|123'
 # or succ
 # or overBalance
 # or else
-test 'make an order' do |r|
-  begin
-    r=Btc38.submit_order(1,'cny',1000,1,'btc' )
-    p r
-    p r.body
-  rescue Exception=>e
-    p e.message
+  test 'make an order' do |r|
+    begin
+      r=Btc38.submit_order(1,'cny',1000,1,'btc' )
+      p r
+      p r.body
+    rescue Exception=>e
+      p e.message
+    end
   end
-end
-
 
 # return value includes:
 # "no_record"
 # "succ"
-test 'cancel an order' do |r|
+  test 'cancel an order' do |r|
+    begin
+      r=Btc38.cancel_order('cny','btc','368205786')
+      p r
+      p r.body
+    rescue Exception=>e
+      p e.message
+    end
+  end
+
+  test "my orders" do |r|
+    begin
+      r=Btc38.order_list('cny','btc')
+      p r
+      p r.body
+    rescue Exception=>e
+      p e.message
+    end
+  end
+
+  test "my trades" do |r|
+    begin
+      r=Btc38.trade_list('cny','xlm',1)
+      p r
+      p r.body
+    rescue Exception=>e
+      p e.message
+    end
+  end
+
+else   #eval the code
   begin
-    r=Btc38.cancel_order('cny','btc','368205786')
+    r=(eval ARGV[0])
     p r
     p r.body
   rescue Exception=>e
     p e.message
+
   end
 end
 
-test "my orders" do |r|
-  begin
-    r=Btc38.order_list('cny','btc')
-    p r
-    p r.body
-  rescue Exception=>e
-    p e.message
-  end
-end
-
-test "my trades" do |r|
-  begin
-    r=Btc38.trade_list('cny','xlm',1)
-    p r
-    p r.body
-  rescue Exception=>e
-    p e.message
-  end
-end
