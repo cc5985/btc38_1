@@ -193,9 +193,30 @@ class Depth
     self.asks=[]
   end
 
-  def -(order_list)
+  def -(other)
+    unless other.class==Depth
+      raise 'param type wrong'
+    end
 
+    other.bids.each do |bid|
+      price=bid.price
+      amount=bid.amount
+      self.bids.each do |bbiidd|
+        if bbiidd.price==price
+          bbiidd.amount-=amount
+        end
+      end
+    end
 
+    other.asks.each do |ask|
+      price=ask.price
+      amount=ask.amount
+      self.asks.each do |aasskk|
+        if aasskk.price==price
+          aasskk.amount-=amount
+        end
+      end
+    end
   end
 
   def absolute_mid_point
