@@ -217,6 +217,7 @@ class Depth
         end
       end
     end
+    return self
   end
 
   def absolute_mid_point
