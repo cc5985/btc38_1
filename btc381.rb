@@ -179,7 +179,7 @@ class Array
         depth.bids<<ask
       end
     end
-    return result
+    return item
   end
 end
 
