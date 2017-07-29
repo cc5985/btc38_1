@@ -170,8 +170,8 @@ class Array
       raise 'wrong'
     end
     self.each do |item|
-      result=JSON.parse item
-      if result["type"]=1
+
+      if item["type"]==1
         bid=Bid.new(result["price"],result["amount"])
         depth.bids<<bid
       else
