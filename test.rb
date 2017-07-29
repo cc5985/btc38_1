@@ -86,8 +86,9 @@ end
 
 test "my orders to depth" do |r|
   begin
-    r=Btc38.order_list('cny','btc')
+    r=JSON.parse Btc38.order_list('cny','btc')
     p r
+    p r.class
     depth=r.to_depth
     p depth
     p depth.bids
