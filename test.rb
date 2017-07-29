@@ -92,10 +92,10 @@ test "my orders to depth" do |r|
     order_list=r.to_depth
     p order_list
     p order_list.asks
-
+    p '-'*40
     r=JSON.parse Btc38.depth
     depth=r.to_depth
-
+    o '-'*40
     d=depth-order_list
     p d
 
