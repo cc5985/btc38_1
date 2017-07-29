@@ -11,6 +11,14 @@
 #
 require_relative 'helper'
 require_relative 'btc381'
+require 'json'
+require 'rufus-scheduler'
+
+scheduler=Rufus::Scheduler.new
+
+scheduler.every '1s' do
+  p Time.new
+end
 
 Btc38.setup do |config|
   config.key="3b6f724d97da434fba4344c8bf6c2d80"
@@ -18,52 +26,55 @@ Btc38.setup do |config|
   config.uid = '94238'
 end
 
-if ARGV[0].nil?
-  test 'ticker' do |r|
-    r=Btc38.ticker
-    p r
-    p r.body
-  end
 
-  test 'depth' do |r|
-    r=Btc38.depth
-    p r
-    p r.body
-  end
+# following are unit tests:
 
-  test 'trades' do |r|
-    r=Btc38.trades
-    p r
-    p r.body
-  end
-
-# return value is like 'succ|123'
-# or succ
-# or overBalance
-# or else
-  test 'make an order' do |r|
-    begin
-      r=Btc38.submit_order(1,'cny',1000,1,'btc' )
-      p r
-      p r.body
-    rescue Exception=>e
-      p e.message
-    end
-  end
-
-# return value includes:
-# "no_record"
-# "succ"
-  test 'cancel an order' do |r|
-    begin
-      r=Btc38.cancel_order('cny','btc','368205786')
-      p r
-      p r.body
-    rescue Exception=>e
-      p e.message
-    end
-  end
-
+# if ARGV[0].nil?
+#   test 'ticker' do |r|
+#     r=Btc38.ticker
+#     p r
+#     p r.body
+#   end
+#
+#   test 'depth' do |r|
+#     r=Btc38.depth
+#     p r
+#     p r.body
+#   end
+#
+#   test 'trades' do |r|
+#     r=Btc38.trades
+#     p r
+#     p r.body
+#   end
+#
+# # return value is like 'succ|123'
+# # or succ
+# # or overBalance
+# # or else
+#   test 'make an order' do |r|
+#     begin
+#       r=Btc38.submit_order(1,'cny',1000,1,'btc' )
+#       p r
+#       p r.body
+#     rescue Exception=>e
+#       p e.message
+#     end
+#   end
+#
+# # return value includes:
+# # "no_record"
+# # "succ"
+#   test 'cancel an order' do |r|
+#     begin
+#       r=Btc38.cancel_order('cny','btc','368205786')
+#       p r
+#       p r.body
+#     rescue Exception=>e
+#       p e.message
+#     end
+#   end
+#
   test "my orders" do |r|
     begin
       r=Btc38.order_list('cny','btc')
@@ -73,25 +84,49 @@ if ARGV[0].nil?
       p e.message
     end
   end
+#
+#   test "my trades" do |r|
+#     begin
+#       r=Btc38.trade_list('cny','xlm',1)
+#       p r
+#       p r.body
+#     rescue Exception=>e
+#       p e.message
+#     end
+#   end
+#
+# else   #eval the code
+#   begin
+#     r=(eval ARGV[0])
+#     p r
+#     p r.body
+#   rescue Exception=>e
+#     p e.message
+#
+#   end
+# end
 
-  test "my trades" do |r|
-    begin
-      r=Btc38.trade_list('cny','xlm',1)
-      p r
-      p r.body
-    rescue Exception=>e
-      p e.message
-    end
-  end
 
-else   #eval the code
-  begin
-    r=(eval ARGV[0])
-    p r
-    p r.body
-  rescue Exception=>e
-    p e.message
 
-  end
-end
 
+
+# test 'ticker parser' do
+#   markets=Btc38.ordered_markets
+#   p markets
+# end
+#
+# test 'get the top 5 trading objects' do
+#   coins=Btc38.get_top_n_objects(10)
+#   p coins
+# end
+
+# test 'get order books of top 5 objects' do
+#   coins=Btc38.get_top_n_objects(1)
+#   coins.each do |coin|
+#     reulst=JSON.parse Btc38.depth(coin)
+#     depth=reulst.to_depth
+#     absolute_mid_point=depth.absolute_mid_point
+#     p depth
+#   end
+#
+# end

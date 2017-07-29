@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'openssl'
 require 'addressable/uri'
+require 'json'
 
 module Btc38
   class << self
@@ -23,15 +24,80 @@ module Btc38
   end
 
   def self.ticker(c='btc', mk_type='cny')
-    get 'ticker', c: c, mk_type: mk_type
+    result=get 'ticker', c: c, mk_type: mk_type
+    return result.body
+  end
+
+  def self.ordered_markets(order='desc')
+    begin
+      result=[]
+
+      ticker=Btc38.ticker('all','cny')
+      ticker=JSON.parse(ticker)
+      ticker.each do |key,value|
+        coin=key
+        volume=0
+
+        t=ticker[key]
+        t.each do |k,v|
+          volume=t[k]["vol"].to_f*t[k]["last"].to_f
+        end
+        hash={coin=>volume}
+        result<<hash
+      end
+      case order
+        when "desc"
+          result.sort! do |a,b|
+            a=a.to_h
+            b=b.to_h
+            key_of_a=a.keys[0]
+            key_of_b=b.keys[0]
+            a[key_of_a]<=>b[key_of_b]
+          end
+          result.reverse!
+        when "asc"
+          result.sort! do |a,b|
+            a=a.to_h
+            b=b.to_h
+            key_of_a=a.keys[0]
+            key_of_b=b.keys[0]
+            a[key_of_a]<=>b[key_of_b]
+          end
+
+      end
+      return result
+      # rescue Exception=>e
+      #   return e.message
+    end
+
+  end
+
+  def self.get_top_n_objects(n=5)
+    unless n.class==Fixnum
+      raise "wrong param"
+    end
+    if n>=10
+      n=10
+    end
+    if n<=0
+      n=1
+    end
+    markets=Btc38.ordered_markets
+    coins=[]
+    for i in (1..n) do
+      coins<<markets[i-1].to_h.keys[0]
+    end
+    return coins
   end
 
   def self.depth(c='btc', mk_type='cny')
-    get 'depth', c: c, mk_type: mk_type
+    result=get 'depth', c: c, mk_type: mk_type
+    return result.body
   end
 
   def self.trades(c='btc', mk_type='cny', options = {})
-    get 'trades', options.merge({c: c, mk_type: mk_type})
+    result=get 'trades', options.merge({c: c, mk_type: mk_type})
+    return result.body
   end
 
   def self.balances
@@ -76,3 +142,81 @@ module Btc38
     {key: configuration.key, time: time, md5: Digest::MD5.hexdigest(mdt)}
   end
 end
+
+class Hash
+  def to_depth
+    depth=Depth.new
+    if self.class==Hash
+      bs=self["bids"]
+      bs.each do |b|
+        bid=Bid.new(b[0],b[1])
+        depth.bids<<bid
+      end
+      as=self["asks"]
+      as.each do |a|
+        ask=Ask.new(a[0],a[1])
+        depth.asks<<ask
+      end
+      return depth
+    end
+  end
+end
+
+# this class represents depth in any given market
+# a depth instance has two attributes: bids is an array of bid, whereas asks is an array of ask
+# bid and ask is a subclass of order, where there are two attributes: price and amount
+class Depth
+  attr_accessor :bids,:asks
+  def initialize()
+    self.bids=[]
+    self.asks=[]
+  end
+
+  def -(order_list)
+
+
+  end
+
+  def absolute_mid_point
+    (self.bids[0].price+self.asks[0].price)/2
+  end
+
+  def mid_point(ref='vol',distance=5,options={})
+
+  end
+end
+
+class Strategy
+  attr_accessor :depth,:fee
+
+  def initialize(depth,fee)
+    unless depth.class==Depth
+      raise "wrong param"
+    end
+    self.depth=depth
+    self.fee=fee
+  end
+
+  def trade
+
+  end
+end
+
+class Order
+  attr_accessor :amount,:price
+
+  def initialize(price,amount)
+    self.amount=amount.to_f
+    self.price=price.to_f
+  end
+end
+
+class Bid<Order
+
+end
+
+class Ask<Order
+
+end
+
+
