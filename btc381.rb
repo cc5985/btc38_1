@@ -114,7 +114,8 @@ module Btc38
   end
 
   def self.order_list(mk_type='cny', coinname='btc')
-    post 'getOrderList', mk_type: mk_type, coinname: coinname
+    result=post 'getOrderList', mk_type: mk_type, coinname: coinname
+    return result.body
   end
 
   def self.trade_list(mk_type='cny', coinname='btc',page=1)
@@ -159,6 +160,26 @@ class Hash
       end
       return depth
     end
+  end
+end
+
+class Array
+  def to_depth
+    depth=Depth.new
+    unless self.class==Array
+      raise 'wrong'
+    end
+    self.each do |item|
+      result=JSON.parse item
+      if result["type"]=1
+        bid=Bid.new(result["price"],result["amount"])
+        depth.bids<<bid
+      else
+        ask=Ask.new(result["price"],result["amount"])
+        depth.bids<<ask
+      end
+    end
+    return result
   end
 end
 

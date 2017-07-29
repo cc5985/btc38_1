@@ -75,15 +75,24 @@ end
 #     end
 #   end
 #
-  test "my orders" do |r|
-    begin
-      r=Btc38.order_list('cny','btc')
-      p r
-      p r.body
-    rescue Exception=>e
-      p e.message
-    end
+# test "my orders" do |r|
+#   begin
+#     r=Btc38.order_list('cny','btc')
+#     p r
+#   rescue Exception=>e
+#     p e.message
+#   end
+# end
+
+test "my orders to depth" do |r|
+  begin
+    r=Btc38.order_list('cny','btc')
+    p r
+    depth=r.to_depth
+    p depth
+    p depth.bids
   end
+end
 #
 #   test "my trades" do |r|
 #     begin
