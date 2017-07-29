@@ -172,10 +172,10 @@ class Array
     self.each do |item|
 
       if item["type"]==1
-        bid=Bid.new(result["price"],result["amount"])
+        bid=Bid.new(item["price"],item["amount"])
         depth.bids<<bid
       else
-        ask=Ask.new(result["price"],result["amount"])
+        ask=Ask.new(item["price"],item["amount"])
         depth.bids<<ask
       end
     end
