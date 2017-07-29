@@ -14,11 +14,11 @@ require_relative 'btc381'
 require 'json'
 require 'rufus-scheduler'
 
-scheduler=Rufus::Scheduler.new
-
-scheduler.every '1s' do
-  p Time.new
-end
+# scheduler=Rufus::Scheduler.new
+#
+# scheduler.every '1s' do
+#   p Time.new
+# end
 
 Btc38.setup do |config|
   config.key="3b6f724d97da434fba4344c8bf6c2d80"

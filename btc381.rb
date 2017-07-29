@@ -176,7 +176,7 @@ class Array
         depth.bids<<bid
       else
         ask=Ask.new(item["price"],item["amount"])
-        depth.bids<<ask
+        depth.asks<<ask
       end
     end
     return depth
