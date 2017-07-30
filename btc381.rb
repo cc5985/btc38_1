@@ -201,9 +201,14 @@ class Depth
     other.bids.each do |bid|
       price=bid.price
       amount=bid.amount
-      self.bids.each do |bbiidd|
-        if bbiidd.price==price
-          bbiidd.amount-=amount
+      # self.bids.each do |bbiidd|
+      #   if bbiidd.price==price
+      #     bbiidd.amount-=amount
+      #   end
+      # end
+      self.bids.collect! do |item|
+        if item.price==price
+          item.amount-=amount
         end
       end
     end
@@ -211,9 +216,9 @@ class Depth
     other.asks.each do |ask|
       price=ask.price
       amount=ask.amount
-      self.asks.each do |aasskk|
-        if aasskk.price==price
-          aasskk.amount-=amount
+      self.asks.collect! do |item|
+        if item.price==price
+          item.amount-=amount
         end
       end
     end
