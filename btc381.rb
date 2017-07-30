@@ -194,11 +194,14 @@ class Depth
   end
 
   def -(other)
+    size_of_bids=self.bids.to_a.size
+    size_of_asks=self.asks.to_a.size
     unless other.class==Depth
       raise 'param type wrong'
     end
 
     other.bids.each do |bid|
+
       price=bid.price
       amount=bid.amount
       # self.bids.each do |bbiidd|
@@ -206,20 +209,30 @@ class Depth
       #     bbiidd.amount-=amount
       #   end
       # end
-      self.bids.collect! do |item|
-        if item.price==price
-          item.amount-=amount
+      cnt=0
+      while cnt<size_of_bids
+        if self.bids[cnt].price==price
+          self.bids[cnt].amount-=amount
         end
+        cnt+=1
       end
+
     end
 
     other.asks.each do |ask|
       price=ask.price
       amount=ask.amount
-      self.asks.collect! do |item|
-        if item.price==price
-          item.amount-=amount
+      # self.asks.collect! do |item|
+      #   if item.price==price
+      #     item.amount-=amount
+      #   end
+      # end
+      cnt=0
+      while cnt<size_of_asks
+        if self.asks[cnt].price==price
+          self.asks[cnt].amount-=amount
         end
+        cnt+=1
       end
     end
     return self
