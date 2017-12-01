@@ -2,6 +2,7 @@ require 'rest-client'
 require 'openssl'
 require 'addressable/uri'
 require 'json'
+require_relative 'universal'
 
 module Btc38
   class << self
@@ -25,7 +26,8 @@ module Btc38
 
   def self.ticker(c='btc', mk_type='cny')
     result=get 'ticker', c: c, mk_type: mk_type
-    return result.body
+    result=Ticker.new("Btc38",c.to_s+'_'+mk_type.to_s, result.body)
+    return result
   end
 
   def self.ordered_markets(order='desc')
@@ -92,16 +94,22 @@ module Btc38
 
   def self.depth(c='btc', mk_type='cny')
     result=get 'depth', c: c, mk_type: mk_type
-    return result.body
+    depth=Depth.new("btc38", c.to_s+'_'+mk_type.to_s,result)
   end
 
   def self.trades(c='btc', mk_type='cny', options = {})
     result=get 'trades', options.merge({c: c, mk_type: mk_type})
-    return result.body
+    result=Trades.new('btc38',c.to_s+'_'+mk_type.to_s, result)
+    # return result.body
   end
 
   def self.balances
-    post 'getMyBalance'
+    begin
+      return post 'getMyBalance'
+    rescue Exception=>e
+      return e
+    end
+
   end
 
   def self.submit_order(type, mk_type='cny', price, amount, coinname)
@@ -144,140 +152,6 @@ module Btc38
   end
 end
 
-class Hash
-  def to_depth
-    depth=Depth.new
-    if self.class==Hash
-      bs=self["bids"]
-      bs.each do |b|
-        bid=Bid.new(b[0],b[1])
-        depth.bids<<bid
-      end
-      as=self["asks"]
-      as.each do |a|
-        ask=Ask.new(a[0],a[1])
-        depth.asks<<ask
-      end
-      return depth
-    end
-  end
-end
 
-class Array
-  def to_depth
-    depth=Depth.new
-    unless self.class==Array
-      raise 'wrong'
-    end
-    self.each do |item|
-
-      if item["type"]==1
-        bid=Bid.new(item["price"],item["amount"])
-        depth.bids<<bid
-      else
-        ask=Ask.new(item["price"],item["amount"])
-        depth.asks<<ask
-      end
-    end
-    return depth
-  end
-end
-
-# this class represents depth in any given market
-# a depth instance has two attributes: bids is an array of bid, whereas asks is an array of ask
-# bid and ask is a subclass of order, where there are two attributes: price and amount
-class Depth
-  attr_accessor :bids,:asks
-  def initialize()
-    self.bids=[]
-    self.asks=[]
-  end
-
-  def -(other)
-    size_of_bids=self.bids.to_a.size
-    size_of_asks=self.asks.to_a.size
-    unless other.class==Depth
-      raise 'param type wrong'
-    end
-
-    other.bids.each do |bid|
-
-      price=bid.price
-      amount=bid.amount
-      # self.bids.each do |bbiidd|
-      #   if bbiidd.price==price
-      #     bbiidd.amount-=amount
-      #   end
-      # end
-      cnt=0
-      while cnt<size_of_bids
-        if self.bids[cnt].price==price
-          self.bids[cnt].amount-=amount
-        end
-        cnt+=1
-      end
-
-    end
-
-    other.asks.each do |ask|
-      price=ask.price
-      amount=ask.amount
-      # self.asks.collect! do |item|
-      #   if item.price==price
-      #     item.amount-=amount
-      #   end
-      # end
-      cnt=0
-      while cnt<size_of_asks
-        if self.asks[cnt].price==price
-          self.asks[cnt].amount-=amount
-        end
-        cnt+=1
-      end
-    end
-    return self
-  end
-
-  def absolute_mid_point
-    (self.bids[0].price+self.asks[0].price)/2
-  end
-
-  def mid_point(ref='vol',distance=5,options={})
-
-  end
-end
-
-class Strategy
-  attr_accessor :depth,:fee
-
-  def initialize(depth,fee)
-    unless depth.class==Depth
-      raise "wrong param"
-    end
-    self.depth=depth
-    self.fee=fee
-  end
-
-  def trade
-
-  end
-end
-
-class Order
-  attr_accessor :amount,:price
-
-  def initialize(price,amount)
-    self.amount=amount.to_f
-    self.price=price.to_f
-  end
-end
-
-class Bid<Order
-
-end
-
-class Ask<Order
-
-end
 
 
