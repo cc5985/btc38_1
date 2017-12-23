@@ -2,6 +2,7 @@ require 'rest-client'
 require 'openssl'
 require 'addressable/uri'
 require 'json'
+require_relative 'universal'
 
 
 
@@ -27,8 +28,9 @@ module OkCoin
   end
 
 
-  def self.ticker(c='btc', mk_type='cny')
+  def self.ticker(c='btc', mk_type='usdt')
     result=get 'ticker', symbol: c.to_s+'_'+mk_type.to_s
+    p result
     result=Ticker.new("OkCoin",c.to_s+'_'+mk_type.to_s, result.body)
     return result
   end
@@ -95,13 +97,13 @@ module OkCoin
     return coins
   end
 
-  def self.depth(c='btc', mk_type='cny')
+  def self.depth(c='btc', mk_type='usdt')
     result=get 'depth', symbol: c.to_s+'_'+mk_type.to_s
 
     depth=Depth.new("okcoin", c.to_s+'_'+mk_type.to_s,result)
   end
 
-  def self.trades(c='btc', mk_type='cny')
+  def self.trades(c='btc', mk_type='usdt')
     result=get 'trades', symbol: c.to_s+'_'+mk_type.to_s
     result=Trades.new('OkCoin',c.to_s+'_'+mk_type.to_s, result)
   end
@@ -235,7 +237,7 @@ module OkCoin
 
   end
 
-  def self.cancel_order(mk_type='cny',coinname='btc', order_id)
+  def self.cancel_order(mk_type='usdt',coinname='btc', order_id)
     params={api_key: configuration.key, symbol: coinname.to_s + "_" + mk_type.to_s, order_id: order_id.to_s }
     json=post 'cancel_order', params
     CancelOrderResult.new("OkCoin",coinname.to_s + "_" + mk_type.to_s,json,order_id)
@@ -269,7 +271,7 @@ module OkCoin
   protected
 
   def self.resource
-    @@resouce ||= RestClient::Resource.new( 'https://www.okcoin.cn/api' )
+    @@resouce ||= RestClient::Resource.new( 'https://www.okex.com/api/')
   end
 
   def self.get( command, params = {} )
